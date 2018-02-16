@@ -13,6 +13,12 @@ with tf.Session() as session:                    # Create a session and print th
     print(session.run(loss))                     # Prints the loss
 
 
+def load_data():
+    train_X = np.loadtxt('output/Othello.01e4.ggf_white_white_X.txt', delimiter=' ', dtype='float')
+    train_Y = np.loadtxt('output/Othello.01e4.ggf_white_white_Y.txt', delimiter=' ', dtype='float')
+    return train_X, train_Y
+
+
 def create_placeholders(n_x, n_y):
     X = tf.placeholder(tf.float32, shape=(n_x, None), name="X")
     Y = tf.placeholder(tf.float32, shape=(n_y, None), name="Y")
@@ -47,6 +53,63 @@ def initialize_parameters(seed):
     return parameters
 
 
-X, Y = create_placeholders(64*64, 65)
-parameters = initialize_parameters(1)
+def forward_propagation(X, parameters):
+    # フォワードプロパゲーション
+    W1 = parameters['W1']
+    b1 = parameters['b1']
+    W2 = parameters['W2']
+    b2 = parameters['b2']
+    W3 = parameters['W3']
+    b3 = parameters['b3']
+    W4 = parameters['W4']
+    b4 = parameters['b4']
+    W5 = parameters['W5']
+    b5 = parameters['b5']
+
+    # calculate neural network
+    Z1 = tf.add(tf.matmul(W1, X), b1)  # Z1 = np.dot(W1, X) + b1
+    A1 = tf.nn.relu(Z1)  # A1 = relu(Z1)
+    Z2 = tf.add(tf.matmul(W2, A1), b2)  # Z2 = np.dot(W2, a1) + b2
+    A2 = tf.nn.relu(Z2)  # A2 = relu(Z2)
+    Z3 = tf.add(tf.matmul(W3, A2), b3)  # Z3 = np.dot(W3,Z2) + b3
+    A3 = tf.nn.relu(Z3)
+    Z4 = tf.add(tf.matmul(W4, A3), b4)
+    A4 = tf.nn.relu(Z4)
+    Z5 = tf.add(tf.matmul(W5, A4), b5)
+
+    return Z5
+
+
+def compute_cost(Z5, Y):
+    logits = tf.transpose(Z5)
+    labels = tf.transpose(Y)
+
+    cost = tf.reduce_mean(tf.nn.softmax_cross_entropy_with_logits(logits=logits, labels=labels))
+    return cost
+
+
+def model(X_train, Y_train, X_test, Y_test, learning_rate=0.0001,
+          num_epochs=1500, minibatch_size=32, print_cost=True):
+    ops.reset_default_graph()  # to be able to rerun the model without overwriting tf variables
+
+
+
+with tf.Session() as sess:
+    X, Y = create_placeholders(64, 65)
+    parameters = initialize_parameters(1)
+    Z3 = forward_propagation(X, parameters)
+    cost = compute_cost(Z3, Y)
+    print("W1 = " + str(parameters["W1"]))
+    print("b1 = " + str(parameters["b1"]))
+    print("W2 = " + str(parameters["W2"]))
+    print("b2 = " + str(parameters["b2"]))
+    print("W3 = " + str(parameters["W3"]))
+    print("b3 = " + str(parameters["b3"]))
+    print("W4 = " + str(parameters["W4"]))
+    print("b4 = " + str(parameters["b4"]))
+    print("W5 = " + str(parameters["W5"]))
+    print("b5 = " + str(parameters["b5"]))
+
+
+
 
