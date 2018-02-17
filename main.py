@@ -31,13 +31,13 @@ def initialize_parameters(seed):
     W1 = tf.get_variable("W1", [100, 64], initializer=tf.contrib.layers.xavier_initializer(seed=seed))
     b1 = tf.get_variable("b1", [100, 1], initializer=tf.zeros_initializer())
     W2 = tf.get_variable("W2", [150, 100], initializer=tf.contrib.layers.xavier_initializer(seed=seed))
-    b2 = tf.get_variable("b2", [150, 1], initializer=tf.contrib.layers.xavier_initializer(seed=seed))
+    b2 = tf.get_variable("b2", [150, 1], initializer=tf.zeros_initializer())
     W3 = tf.get_variable("W3", [100, 150], initializer=tf.contrib.layers.xavier_initializer(seed=seed))
-    b3 = tf.get_variable("b3", [100, 1], initializer=tf.contrib.layers.xavier_initializer(seed=seed))
+    b3 = tf.get_variable("b3", [100, 1], initializer=tf.zeros_initializer())
     W4 = tf.get_variable("W4", [80, 100], initializer=tf.contrib.layers.xavier_initializer(seed=seed))
-    b4 = tf.get_variable("b4", [80, 1], initializer=tf.contrib.layers.xavier_initializer(seed=seed))
+    b4 = tf.get_variable("b4", [80, 1], initializer=tf.zeros_initializer())
     W5 = tf.get_variable("W5", [65, 80], initializer=tf.contrib.layers.xavier_initializer(seed=seed))
-    b5 = tf.get_variable("b5", [65, 1], initializer=tf.contrib.layers.xavier_initializer(seed=seed))
+    b5 = tf.get_variable("b5", [65, 1], initializer=tf.zeros_initializer())
 
     parameters = {"W1": W1,
                   "b1": b1,
