@@ -88,27 +88,49 @@ def compute_cost(Z5, Y):
     return cost
 
 
+
 def model(X_train, Y_train, X_test, Y_test, learning_rate=0.0001,
-          num_epochs=1500, minibatch_size=32, print_cost=True):
-    ops.reset_default_graph()  # to be able to rerun the model without overwriting tf variables
+          num_epochs=150, minibatch_size=32, print_cost=True):
 
+    ops.reset_default_graph()
+    tf.set_random_seed(1)
+    costs = []
 
-
-with tf.Session() as sess:
     X, Y = create_placeholders(64, 65)
     parameters = initialize_parameters(1)
     Z3 = forward_propagation(X, parameters)
     cost = compute_cost(Z3, Y)
-    print("W1 = " + str(parameters["W1"]))
-    print("b1 = " + str(parameters["b1"]))
-    print("W2 = " + str(parameters["W2"]))
-    print("b2 = " + str(parameters["b2"]))
-    print("W3 = " + str(parameters["W3"]))
-    print("b3 = " + str(parameters["b3"]))
-    print("W4 = " + str(parameters["W4"]))
-    print("b4 = " + str(parameters["b4"]))
-    print("W5 = " + str(parameters["W5"]))
-    print("b5 = " + str(parameters["b5"]))
+
+    # Use AdamOptimizer
+    optimizer = tf.train.AdamOptimizer(learning_rate=learning_rate).minimize(cost)
+
+    init = tf.global_variables_initializer()
+    print(X_train.shape)
+    print(Y_train.shape)
+    with tf.Session() as sess:
+        # Run the initialization
+        sess.run(init)
+
+        # Do the training loop
+        for epoch in range(num_epochs):
+            epoch_cost = 0.
+            _, epoch_cost = sess.run([optimizer, cost], feed_dict={X: X_train.transpose(), Y: Y_train.transpose()})
+
+            # Print the cost every epoch
+            if print_cost == True and epoch % 100 == 0:
+                print("Cost after epoch %i: %f" % (epoch, epoch_cost))
+            if print_cost == True and epoch % 5 == 0:
+                    costs.append(epoch_cost)
+
+        parameters = sess.run(parameters)
+        print("Parameters have been trained!")
+
+        return parameters
+
+
+(X_train, Y_train) = load_data()
+parameters = model(X_train, Y_train, "", "")
+
 
 
 
